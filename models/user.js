@@ -58,10 +58,6 @@ const userSchema = new mongoose.Schema({
         ref: 'interest', 
         required: false,
     }],
-    _phone:{
-        type: String,
-        required: true,
-    },
     _orientations: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'orientation', 
@@ -117,5 +113,26 @@ userSchema.path('_password').validate((_password)=>{
     return passwordCount;
 
 }, 'Password size has to be minimun 8 values and maximun 20 characters.')
+
+
+usersSchema.pre('save', function(next){
+    if(this.isModified('_password')){
+        bcrypt.hash(this._password, 9 , (err, hash) => {
+            if(err) return next(err);
+            this._password = hash;
+            next();
+        })
+    }
+})
+
+usersSchema.methods.comparePassword = async function(_password) {
+    if(!_password) throw new Error('Password is missing.')
+    try{
+        const result = await bcrypt.compare(_password, this._password);
+        return result;
+    }catch(err){
+        console.log('Error in password validation.', err.message)
+    }
+};
 
 module.exports = mongoose.model('user', userSchema)

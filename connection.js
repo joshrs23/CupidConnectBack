@@ -9,6 +9,7 @@ const app = express();
 
 const CountryRouter = require('./routes/country');
 const ProvinceRouter = require('./routes/province');
+const ProvinceUser = require('./routes/user');
 
 
 app.use(cors());
@@ -28,6 +29,10 @@ app.use('/create-province', express.json());
 app.use('/get-province-by-country', express.json());
 app.use('/get-province', express.json());
 
+//user
+app.use('/create-user',express.json());
+app.use('/delete-user',express.json());
+app.use('/sign-in',express.json());
 
 const port = 8000;
 https.createServer(app).listen(port, () => {
