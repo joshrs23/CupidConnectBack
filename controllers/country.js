@@ -4,10 +4,10 @@ const Country = require('../models/country');
 exports.createCountry = async(req, res) => {
     
     try{
-        const { __name } = req.body;
+        const { _name } = req.body;
 
         const newCountry = Country({
-          __name,
+          _name,
         });
 
         await newCountry.save('nebula');

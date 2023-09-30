@@ -19,7 +19,7 @@ countrySchema.path('_name').validate(async(_name)=>{
 
     return !count;
 
-}, 'Email already exists.')
+}, 'Country already exists.')
 
 
 module.exports = mongoose.model('country', countrySchema)
