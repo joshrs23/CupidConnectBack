@@ -8,6 +8,7 @@ require('./models/connectionMongoDb');
 const app = express();
 
 const CountryRouter = require('./routes/country');
+const ProvinceRouter = require('./routes/province');
 
 
 app.use(cors());
@@ -21,6 +22,11 @@ app.use((req, res, next) => {
 //country
 app.use('/create-country', express.json());
 app.use('/get-country', express.json());
+
+//province
+app.use('/create-province', express.json());
+app.use('/get-province-by-country', express.json());
+app.use('/get-province', express.json());
 
 
 const port = 8000;
