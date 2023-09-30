@@ -115,7 +115,7 @@ userSchema.path('_password').validate((_password)=>{
 }, 'Password size has to be minimun 8 values and maximun 20 characters.')
 
 
-usersSchema.pre('save', function(next){
+userSchema.pre('save', function(next){
     if(this.isModified('_password')){
         bcrypt.hash(this._password, 9 , (err, hash) => {
             if(err) return next(err);
@@ -125,7 +125,7 @@ usersSchema.pre('save', function(next){
     }
 })
 
-usersSchema.methods.comparePassword = async function(_password) {
+userSchema.methods.comparePassword = async function(_password) {
     if(!_password) throw new Error('Password is missing.')
     try{
         const result = await bcrypt.compare(_password, this._password);
