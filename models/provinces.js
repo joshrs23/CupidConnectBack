@@ -8,7 +8,7 @@ const provincesSchema = new mongoose.Schema({
     },
     country_id:{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'country', 
+        ref: 'countries', 
         required: true,
     }
 }) 

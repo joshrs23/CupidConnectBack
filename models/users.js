@@ -32,17 +32,17 @@ const usersSchema = new mongoose.Schema({
     },
     country:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'country', 
+        ref: 'countries', 
         required: true,
     },
     province:{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'province', 
+        ref: 'provinces', 
         required: true,
     },
     city:{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'city', 
+        ref: 'cities', 
         required: true,
     },
     _address:{
@@ -55,17 +55,17 @@ const usersSchema = new mongoose.Schema({
     },
     _interests: [{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'interest', 
+        ref: 'interests', 
         required: false,
     }],
     _orientations: [{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'orientation', 
+        ref: 'orientations', 
         required: false,
     }],
     identities: [{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'identity', 
+        ref: 'identities', 
         required: false,
     }],
     _type:{
