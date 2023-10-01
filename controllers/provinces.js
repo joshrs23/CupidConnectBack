@@ -1,4 +1,4 @@
-const Province = require('../models/province');
+const Province = require('../models/provinces');
 
 
 exports.createProvince = async(req, res) => {

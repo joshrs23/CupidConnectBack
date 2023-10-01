@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const userSchema = new mongoose.Schema({
+const usersSchema = new mongoose.Schema({
     _email:{
         type: String,
         required: true,
@@ -90,15 +90,15 @@ const userSchema = new mongoose.Schema({
     }
 }) 
 
-userSchema.path('_email').validate(async(_email)=>{
+usersSchema.path('_email').validate(async(_email)=>{
 
-    const count = await mongoose.models.user.countDocuments({_email});
+    const count = await mongoose.models.users.countDocuments({_email});
 
     return !count;
 
 }, 'Email already exists.')
 
-userSchema.path('_email').validate((_email)=>{
+usersSchema.path('_email').validate((_email)=>{
 
     const emailFormat =  _email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$/);
 
@@ -106,7 +106,7 @@ userSchema.path('_email').validate((_email)=>{
 
 }, 'The format of the email is wrong.')
 
-userSchema.path('_password').validate((_password)=>{
+usersSchema.path('_password').validate((_password)=>{
 
     const passwordCount =  _password.length > 7 && _password.length < 21;
 
@@ -115,7 +115,7 @@ userSchema.path('_password').validate((_password)=>{
 }, 'Password size has to be minimun 8 values and maximun 20 characters.')
 
 
-userSchema.pre('save', function(next){
+usersSchema.pre('save', function(next){
     if(this.isModified('_password')){
         bcrypt.hash(this._password, 9 , (err, hash) => {
             if(err) return next(err);
@@ -125,7 +125,7 @@ userSchema.pre('save', function(next){
     }
 })
 
-userSchema.methods.comparePassword = async function(_password) {
+usersSchema.methods.comparePassword = async function(_password) {
     if(!_password) throw new Error('Password is missing.')
     try{
         const result = await bcrypt.compare(_password, this._password);
@@ -135,4 +135,4 @@ userSchema.methods.comparePassword = async function(_password) {
     }
 };
 
-module.exports = mongoose.model('user', userSchema)
+module.exports = mongoose.model('users', usersSchema)

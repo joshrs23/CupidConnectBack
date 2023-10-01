@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const express = require('express');
 const router = express.Router();
-const{createUser, userSignIn,deleteUser} = require('../controllers/user')
+const{createUser, userSignIn,deleteUser} = require('../controllers/users')
 
 
 router.post('/create-user',createUser);

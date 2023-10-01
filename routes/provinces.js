@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const express = require('express');
 const router = express.Router();
-const {createProvince, getProvincesByCountry, getProvince } = require('../controllers/province'); 
+const {createProvince, getProvincesByCountry, getProvince } = require('../controllers/provinces'); 
 
 router.post('/create-province', createProvince);
 router.get('/get-province-by-country', getProvincesByCountry);

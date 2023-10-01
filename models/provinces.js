@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 
-const provinceSchema = new mongoose.Schema({
+const provincesSchema = new mongoose.Schema({
     
     name:{
         type: String,
@@ -15,4 +14,4 @@ const provinceSchema = new mongoose.Schema({
 }) 
 
 
-module.exports = mongoose.model('province', provinceSchema)
+module.exports = mongoose.model('provinces', provincesSchema)

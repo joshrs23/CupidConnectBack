@@ -7,9 +7,9 @@ require('./models/connectionMongoDb');
 
 const app = express();
 
-const CountryRouter = require('./routes/country');
-const ProvinceRouter = require('./routes/province');
-const ProvinceUser = require('./routes/user');
+const CountryRouter = require('./routes/countries');
+const ProvinceRouter = require('./routes/provinces');
+const userRouter = require('./routes/users');
 
 
 app.use(cors());
@@ -36,7 +36,7 @@ app.use('/sign-in',express.json());
 
 app.use(CountryRouter);
 app.use(ProvinceRouter);
-app.use(ProvinceUser);
+app.use(userRouter);
 
 const options = {
   key: fs.readFileSync('/home/nebula/server.key'),
