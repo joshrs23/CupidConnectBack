@@ -34,6 +34,11 @@ app.use('/create-user',express.json());
 app.use('/delete-user',express.json());
 app.use('/sign-in',express.json());
 
+const options = {
+  key: fs.readFileSync('/home/nebula/server.key'),
+  cert: fs.readFileSync('/home/nebula/server.crt')
+};
+
 const port = 8000;
 https.createServer(app).listen(port, () => {
   console.log(`Server HTTPS is listening to the port ${port}`);
