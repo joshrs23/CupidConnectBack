@@ -34,6 +34,10 @@ app.use('/create-user',express.json());
 app.use('/delete-user',express.json());
 app.use('/sign-in',express.json());
 
+app.use(CountryRouter);
+app.use(ProvinceRouter);
+app.use(ProvinceUser);
+
 const options = {
   key: fs.readFileSync('/home/nebula/server.key'),
   cert: fs.readFileSync('/home/nebula/server.crt')
