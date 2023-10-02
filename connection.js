@@ -10,6 +10,7 @@ const app = express();
 const CountryRouter = require('./routes/countries');
 const ProvinceRouter = require('./routes/provinces');
 const userRouter = require('./routes/users');
+const cityRouter = require('./routes/cities');
 
 
 app.use(cors());
@@ -29,6 +30,11 @@ app.use('/create-province', express.json());
 app.use('/get-province-by-country', express.json());
 app.use('/get-province', express.json());
 
+//city
+app.use('/create-city', express.json());
+app.use('/get-cities-by-province', express.json());
+app.use('/get-city', express.json());
+
 //user
 app.use('/create-user',express.json());
 app.use('/delete-user',express.json());
@@ -37,6 +43,7 @@ app.use('/sign-in',express.json());
 app.use(CountryRouter);
 app.use(ProvinceRouter);
 app.use(userRouter);
+app.use(cityRouter);
 
 const options = {
   key: fs.readFileSync('/home/nebula/server.key'),
