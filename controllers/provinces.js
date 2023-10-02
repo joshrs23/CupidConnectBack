@@ -4,10 +4,11 @@ const Province = require('../models/provinces');
 exports.createProvince = async(req, res) => {
     
     try{
-        const { name } = req.body;
+        const { name,country_id } = req.body;
 
         const newProvince = Province({
           name,
+          country_id
         });
 
         await newProvince.save('nebula');
