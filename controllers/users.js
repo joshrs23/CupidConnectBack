@@ -145,7 +145,7 @@ exports.userSignIn = async (req, res)=> {
 exports.deleteUser = [auth,async (req, res) => {
     try {
 
-        const { userId } = req; 
+        const { userId } = req.body; 
 
         const token = req.header('Authorization');
         const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
@@ -165,10 +165,17 @@ exports.deleteUser = [auth,async (req, res) => {
                 });
 
             }
+            
+            const updateResult = await Users.updateOne(
 
-            user._active = false;
+              { _id: userId }, 
+              { $set: { _active: false } } 
 
-            await user.save();
+            );
+
+            if (updateResult.nModified === 0) {
+              res.json({ success: false, error: 'Error user not deleted.' });
+            }
 
             res.json({
 
@@ -203,7 +210,7 @@ exports.deleteUser = [auth,async (req, res) => {
 exports.changePassword = [auth, async (req, res) => {
     try {
 
-        const { userId, newPassword } = req; 
+        const { userId, newPassword } = req.body; 
 
         const token = req.header('Authorization');
         const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
@@ -224,9 +231,18 @@ exports.changePassword = [auth, async (req, res) => {
 
             }
 
-            user._password = newPassword;
+            const updateResult = await Users.updateOne(
 
-            await user.save();
+              { _id: userId }, 
+              { $set: { _password: newPassword } } 
+
+            );
+
+            if (updateResult.nModified === 0) {
+
+              res.json({ success: false, error: 'Error password was not updated.' });
+              
+            }
 
             res.json({
 
