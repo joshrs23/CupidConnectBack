@@ -3,6 +3,7 @@ const Users = require('../models/users');
 const auth = require('../middlewares/authenticate');
 const multer = require('multer');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -230,8 +231,12 @@ exports.changePassword = [auth, async (req, res) => {
                 });
 
             }
+            console.log(user._password+" "+oldPassword)
 
-            if(user.password != oldPassword){
+            const result = await bcrypt.compare(oldPassword, user._password);
+
+
+            if(!result){
 
                 return res.json({
 
@@ -242,10 +247,12 @@ exports.changePassword = [auth, async (req, res) => {
 
             }
 
+            const hashedPassword = await bcrypt.hash(newPassword, 9);
+
             const updateResult = await Users.updateOne(
 
               { _id: userId }, 
-              { $set: { _password: newPassword } } 
+              { $set: { _password: hashedPassword } } 
 
             );
 
