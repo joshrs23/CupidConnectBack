@@ -39,6 +39,7 @@ app.use('/get-city', express.json());
 app.use('/create-user',express.json());
 app.use('/delete-user',express.json());
 app.use('/sign-in',express.json());
+app.use('/change-password',express.json());
 
 app.use(CountryRouter);
 app.use(ProvinceRouter);

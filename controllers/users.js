@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Users = require('../models/users');
+const auth = require('../middlewares/authenticate');
 const multer = require('multer');
 const path = require('path');
 
@@ -36,10 +37,7 @@ exports.createUser = async(req, res) => {
             _address,
             _dob
 
-        } = req.body;
-
-        
-
+        } = req.body;      
 
         const user = Users({
 
@@ -144,44 +142,121 @@ exports.userSignIn = async (req, res)=> {
     })
 }
 
-exports.deleteUser = async (req, res) => {
-  try {
+exports.deleteUser = [auth,async (req, res) => {
+    try {
 
-    const { userId } = req; 
+        const { userId } = req; 
 
-    //validar token y si corresponde al usuario antes de eliminar
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
 
-    const user = await Users.findById(userId);
+        if(userId === _userId){
 
-    if (!user) {
-      return res.json({
-        success: false,
-        error: 'User not found.',
-      });
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            user._active = false;
+
+            await user.save();
+
+            res.json({
+
+                success: true,
+                message: 'User has been successfully deleted.',
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+          success: false,
+          error: 'An error occurred while deleting the user : '+err,
+
+        });
+
     }
+}];
 
-    
-    await user.remove();
+exports.changePassword = [auth, async (req, res) => {
+    try {
 
-    res.json({
+        const { userId, newPassword } = req; 
 
-      success: true,
-      message: 'User has been successfully deleted.',
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
 
-    });
+        if(userId === _userId){
 
+            const user = await Users.findById(userId);
 
-  } catch (err) {
+            if (!user) {
 
-    console.error(err);
-    res.json({
+                return res.json({
 
-      success: false,
-      error: 'An error occurred while deleting the user.',
+                    success: false,
+                    error: 'User not found.',
 
-    });
+                });
 
-  }
-};
+            }
+
+            user._password = newPassword;
+
+            await user.save();
+
+            res.json({
+
+                success: true,
+                message: 'Password has been updated.',
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while changing password : '+err,
+
+        });
+
+    }
+}];
 
   
