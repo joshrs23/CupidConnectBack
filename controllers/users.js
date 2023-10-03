@@ -210,7 +210,7 @@ exports.deleteUser = [auth,async (req, res) => {
 exports.changePassword = [auth, async (req, res) => {
     try {
 
-        const { userId, newPassword } = req.body; 
+        const { userId, oldPassword, newPassword } = req.body; 
 
         const token = req.header('Authorization');
         const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
@@ -226,6 +226,17 @@ exports.changePassword = [auth, async (req, res) => {
 
                     success: false,
                     error: 'User not found.',
+
+                });
+
+            }
+
+            if(user.password != oldPassword){
+
+                return res.json({
+
+                    success: false,
+                    error: 'old pasword doesnt match.',
 
                 });
 
