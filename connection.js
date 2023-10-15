@@ -43,6 +43,12 @@ app.use('/create-user',express.json());
 app.use('/delete-user',express.json());
 app.use('/sign-in',express.json());
 app.use('/change-password',express.json());
+app.use('/change-identity-user',express.json());
+app.use('/change-orientation-user',express.json());
+app.use('/change-interest-user',express.json());
+app.use('/get-identity-user',express.json());
+app.use('/get-orientation-user',express.json());
+app.use('/get-interest-user',express.json());
 
 //identity
 app.use('/get-identity', express.json());

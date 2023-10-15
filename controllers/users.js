@@ -231,7 +231,6 @@ exports.changePassword = [auth, async (req, res) => {
                 });
 
             }
-            console.log(user._password+" "+oldPassword)
 
             const result = await bcrypt.compare(oldPassword, user._password);
 
@@ -293,4 +292,407 @@ exports.changePassword = [auth, async (req, res) => {
     }
 }];
 
-  
+exports.changeIdentity = [auth, async (req, res) => {
+    try {
+
+        const { userId, newIdentity } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            const updateResult = await Users.updateOne(
+
+              { _id: userId }, 
+              { $set: { identities: newIdentity } } 
+
+            );
+
+            if (updateResult.nModified === 0) {
+
+              res.json({ success: false, error: 'Error identities was not updated.' });
+              
+            }
+
+            res.json({
+
+                success: true,
+                message: 'Identities has been updated.',
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while changing identities : '+err,
+
+        });
+
+    }
+}];
+
+exports.changeOrientations = [auth, async (req, res) => {
+    try {
+
+        const { userId, newOrientations } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            const updateResult = await Users.updateOne(
+
+              { _id: userId }, 
+              { $set: { _orientations: newOrientations } } 
+
+            );
+
+            if (updateResult.nModified === 0) {
+
+              res.json({ success: false, error: 'Error orientations was not updated.' });
+              
+            }
+
+            res.json({
+
+                success: true,
+                message: 'Orientations has been updated.',
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while changing orientations : '+err,
+
+        });
+
+    }
+}];
+
+exports.changeInterests = [auth, async (req, res) => {
+    try {
+
+        const { userId, newInterests } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            const updateResult = await Users.updateOne(
+
+              { _id: userId }, 
+              { $set: { _interests: newInterests } } 
+
+            );
+
+            if (updateResult.nModified === 0) {
+
+              res.json({ success: false, error: 'Error interests was not updated.' });
+              
+            }
+
+            res.json({
+
+                success: true,
+                message: 'Interests has been updated.',
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while changing interests : '+err,
+
+        });
+
+    }
+}];
+
+exports.getIdentityByUser = [auth, async (req, res) => {
+    try {
+
+        const { userId } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            
+            if(!user.identities){
+
+                return res.json({
+
+                    success: false,
+                    error: 'User does not have identities saved.',
+
+                });
+
+            }
+
+            res.json({
+
+                success: true,
+                identities: user.identities,
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while getting identities : '+err,
+
+        });
+
+    }
+}];
+
+exports.getOrientationsByUser = [auth, async (req, res) => {
+    try {
+
+        const { userId } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            
+            if(!user._orientations){
+
+                return res.json({
+
+                    success: false,
+                    error: 'User does not have orientations saved.',
+
+                });
+
+            }
+
+            res.json({
+
+                success: true,
+                orientations: user._orientations,
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while getting orientations : '+err,
+
+        });
+
+    }
+}];
+
+exports.getInterestsByUser = [auth, async (req, res) => {
+    try {
+
+        const { userId } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            
+            if(!user._interests){
+
+                return res.json({
+
+                    success: false,
+                    error: 'User does not have interests saved.',
+
+                });
+
+            }
+
+            res.json({
+
+                success: true,
+                interests: user._interests,
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while getting interests : '+err,
+
+        });
+
+    }
+}];
