@@ -11,6 +11,9 @@ const CountryRouter = require('./routes/countries');
 const ProvinceRouter = require('./routes/provinces');
 const userRouter = require('./routes/users');
 const cityRouter = require('./routes/cities');
+const identityRouter = require('./routes/identities');
+const orientationRouter = require('./routes/orientations');
+const interestRouter = require('./routes/interests');
 
 
 app.use(cors());
@@ -41,10 +44,22 @@ app.use('/delete-user',express.json());
 app.use('/sign-in',express.json());
 app.use('/change-password',express.json());
 
+//identity
+app.use('/get-identity', express.json());
+
+//orientation
+app.use('/get-orientation', express.json());
+
+//interest
+app.use('/get-interest', express.json());
+
 app.use(CountryRouter);
 app.use(ProvinceRouter);
 app.use(userRouter);
 app.use(cityRouter);
+app.use(identityRouter);
+app.use(orientationRouter);
+app.use(interestRouter);
 
 const options = {
   key: fs.readFileSync('/home/nebula/server.key'),
