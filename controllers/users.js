@@ -61,19 +61,22 @@ exports.createUser = async(req, res) => {
               // Save the user data
               await user.save();
 
-              res.json({
 
-                success: true,
-                user: user,
 
-              });
-
-              
               const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
 
                 expiresIn: '1d',
 
               });
+
+              res.json({
+
+                success: true,
+                user: user,
+                token
+
+              });
+             
 
               
         } catch (validationError) {
