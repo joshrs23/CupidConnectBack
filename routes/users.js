@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const express = require('express');
 const router = express.Router();
-const{createUser, userSignIn,deleteUser,changePassword,changeIdentity,changeOrientations,changeInterests,getIdentityByUser,getOrientationsByUser,getInterestsByUser} = require('../controllers/users')
+const{createUser, userSignIn,deleteUser,changePassword,changeIdentity,changeOrientations,changeInterests, changeDescription,getIdentityByUser,getOrientationsByUser,getInterestsByUser,getDescriptionsByUser} = require('../controllers/users')
 
 
 router.post('/create-user',createUser);
@@ -11,8 +11,10 @@ router.post('/sign-in', userSignIn);
 router.post('/change-identity-user', changeIdentity);
 router.post('/change-orientation-user', changeOrientations);
 router.post('/change-interest-user', changeInterests);
+router.post('/change-description-user', changeDescription);
 router.post('/get-identity-user', getIdentityByUser);
 router.post('/get-orientation-user', getOrientationsByUser);
 router.post('/get-interest-user', getInterestsByUser);
+router.post('/get-description-user', getDescriptionsByUser);
 
 module.exports = router;

@@ -499,6 +499,74 @@ exports.changeInterests = [auth, async (req, res) => {
     }
 }];
 
+exports.changeDescription = [auth, async (req, res) => {
+    try {
+
+        const { userId, newDescriptions } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            const updateResult = await Users.updateOne(
+
+              { _id: userId }, 
+              { $set: { _description: newDescriptions } } 
+
+            );
+
+            if (updateResult.nModified === 0) {
+
+              res.json({ success: false, error: 'Error description was not updated.' });
+              
+            }
+
+            res.json({
+
+                success: true,
+                message: 'Description has been updated.',
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while changing description : '+err,
+
+        });
+
+    }
+}];
+
 exports.getIdentityByUser = [auth, async (req, res) => {
     try {
 
@@ -694,6 +762,73 @@ exports.getInterestsByUser = [auth, async (req, res) => {
 
             success: false,
             error: 'An error occurred while getting interests : '+err,
+
+        });
+
+    }
+}];
+
+exports.getDescriptionsByUser = [auth, async (req, res) => {
+    try {
+
+        const { userId } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            
+            if(!user._description){
+
+                return res.json({
+
+                    success: false,
+                    error: 'User does not have a description saved.',
+
+                });
+
+            }
+
+            res.json({
+
+                success: true,
+                descriptions: user._description,
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while getting description : '+err,
 
         });
 
