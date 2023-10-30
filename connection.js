@@ -14,6 +14,8 @@ const cityRouter = require('./routes/cities');
 const identityRouter = require('./routes/identities');
 const orientationRouter = require('./routes/orientations');
 const interestRouter = require('./routes/interests');
+const likeRouter = require('./routes/likes');
+const dislikeRouter = require('./routes/dislikes');
 
 
 app.use(cors());
@@ -51,6 +53,7 @@ app.use('/get-identity-user',express.json());
 app.use('/get-orientation-user',express.json());
 app.use('/get-interest-user',express.json());
 app.use('/get-description-user',express.json());
+app.use('/get-user',express.json());
 
 //identity
 app.use('/get-identity', express.json());
@@ -61,6 +64,17 @@ app.use('/get-orientation', express.json());
 //interest
 app.use('/get-interest', express.json());
 
+//like
+app.use('/add-like', express.json());
+app.use('/delete-like', express.json());
+app.use('/get-likes-user', express.json());
+app.use('/validate-like', express.json());
+app.use('/get-likes-to-user', express.json());
+
+//dislike
+app.use('/add-dislike', express.json());
+
+
 app.use(CountryRouter);
 app.use(ProvinceRouter);
 app.use(userRouter);
@@ -68,6 +82,8 @@ app.use(cityRouter);
 app.use(identityRouter);
 app.use(orientationRouter);
 app.use(interestRouter);
+app.use(likeRouter);
+app.use(dislikeRouter);
 
 const options = {
   key: fs.readFileSync('/home/nebula/server.key'),

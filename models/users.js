@@ -54,10 +54,10 @@ const usersSchema = new mongoose.Schema({
         type: String, 
         required: false,
     }],
-    _orientations: [{
+    _orientations: {
         type: String, 
         required: false,
-    }],
+    },
     identities: {
         type: String, 
         required: false,

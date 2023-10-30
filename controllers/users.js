@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Users = require('../models/users');
+const Likes = require('../models/likes');
+const Dislikes = require('../models/dislikes');
 const auth = require('../middlewares/authenticate');
 const multer = require('multer');
 const path = require('path');
@@ -834,3 +836,204 @@ exports.getDescriptionsByUser = [auth, async (req, res) => {
 
     }
 }];
+
+exports.getUsersForLikes = [auth, async (req, res) => {
+    try {
+
+        const { userId, page } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+
+            if(!user.orientations || !user.identities){
+
+                return res.json({
+
+                    success: false,
+                    error: 'Before search others, define your orientations and identities!.',
+
+                });
+
+
+            }
+
+            const skip = (page - 1) * 10;//10 is itemsPerPage 
+            const orientations = user._orientations;
+            const identities = user.identities;
+            var identitiesSelected = "";
+            var valSkipt = false;
+
+            if(identities == "650f5a16f2cfff2f499f0803"){//hombre
+
+                if(orientations == "650f59c3f2cfff2f499f07ed"){//hetero
+
+                    identitiesSelected = "650f5a16f2cfff2f499f0804";//mujer
+
+                }else if(orientations == "650f59c4f2cfff2f499f07ee"){//homosexual
+
+                    identitiesSelected = "650f5a16f2cfff2f499f0803";//hombre
+
+                }else{
+
+                    valSkipt = true;
+
+                }
+
+            }else if(identities == "650f5a16f2cfff2f499f0804"){//mujer
+
+                if(orientations == "650f59c3f2cfff2f499f07ed"){//hetero
+
+                    identitiesSelected = "650f5a16f2cfff2f499f0803";//hombre
+
+                }else if(orientations == "650f59c4f2cfff2f499f07ee"){//homosexual
+
+                    identitiesSelected = "650f5a16f2cfff2f499f0804";//mujer
+
+                }else{
+
+                    valSkipt = true;
+
+                }
+
+            }else{//cualquier otro
+
+                valSkipt = true;
+
+            }
+
+            const query = {
+                _orientations: orientations,
+                identities: identitiesSelected
+            }
+
+            var users;
+
+            if(valSkipt){
+
+                users = await User.find({ _id: { $ne: userId } })
+                      .skip(skip)
+                      .limit(10);
+
+            }else{
+
+                users = await User.find({ $and: [query, { _id: { $ne: userId } } })
+                      .skip(skip)
+                      .limit(10);
+
+            }
+            
+
+            const userLikes = await Likes.find({ _liker_userId: userId });
+
+            const userDislikes = await Dislikes.find({ _disliker_userId: userId });
+            
+            const usersToDisplay = users.filter((user) => {
+                const userId = user._id.toString(); // Convierte el _id a una cadena
+                    return (
+                        !userLikes.some((like) => like._liked_userId === userId) &&
+                        !userDislikes.some((dislike) => dislike._disliked_userId === userId)
+                    );
+            });
+
+            res.json({
+
+                success: true,
+                usersToDisplay: user.usersToDisplay,
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+            success: false,
+            error: 'An error occurred while getting description : '+err,
+
+        });
+
+    }
+}];
+
+exports.getUser = [auth,async (req, res) => {
+    try {
+
+        const { userId } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId).select('._fname _lname _interests _orientations identities _pictures _profilePicture _description');
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+           
+
+            res.json({
+
+                success: true,
+                user: user,
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+          success: false,
+          error: 'An error occurred while deleting the user : '+err,
+
+        });
+
+    }
+}];                
