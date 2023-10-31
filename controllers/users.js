@@ -1153,7 +1153,8 @@ exports.deletePicture = [auth,async (req, res) => {
             if (index >= 0 && index < user._pictures.length) {
              
               user._pictures.splice(index, 1);
-              await user.save();
+              //await user.save();
+              await Users.updateOne({ _id: userId }, { _pictures: user._pictures })
 
               res.json({ success: true, message: 'Photo deleted.' });
 
