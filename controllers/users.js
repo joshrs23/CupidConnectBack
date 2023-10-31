@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const fileType = file.mimetype.startsWith('image') ? 'img' : 'vid';
+    const fileType = 'img';
     cb(null, path.join('/home/nebula/public_html/', fileType));
   },
   filename: function (req, file, cb) {
@@ -62,8 +62,6 @@ exports.createUser = async(req, res) => {
         try {
               // Save the user data
               await user.save();
-
-
 
               const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
 
@@ -534,7 +532,7 @@ exports.changeDescription = [auth, async (req, res) => {
 
             if (updateResult.nModified === 0) {
 
-              res.json({ success: false, error: 'Error description was not updated.' });
+              return res.json({ success: false, error: 'Error description was not updated.' });
               
             }
 
@@ -955,7 +953,8 @@ exports.getUsersForLikes = [auth, async (req, res) => {
             res.json({
 
                 success: true,
-                usersToDisplay: user.usersToDisplay,
+                //usersToDisplay: user.usersToDisplay,
+                usersToDisplay: usersToDisplay,
 
             });
 
@@ -994,7 +993,7 @@ exports.getUser = [auth,async (req, res) => {
 
         if(userId === _userId){
 
-            const user = await Users.findById(userId).select('._fname _lname _interests _orientations identities _pictures _profilePicture _description');
+            const user = await Users.findById(userId);
 
             if (!user) {
 
@@ -1014,6 +1013,160 @@ exports.getUser = [auth,async (req, res) => {
                 user: user,
 
             });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+          success: false,
+          error: 'An error occurred while deleting the user : '+err,
+
+        });
+
+    }
+}];                
+
+
+exports.updatePicture = [auth,async (req, res) => {
+    try {
+
+        const { userId } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+           
+            if (user._pictures.length >= 3) {
+              
+              return res.json({
+
+                    success: false,
+                    error: 'User has already 3 photos.',
+
+                });
+
+            }
+
+            upload.single('_profilePicture')(req, res, async function (err) {
+          
+                if (err instanceof multer.MulterError) {
+                    return res.json({
+                      success: false,
+                      error: err.message+" error 400",
+                    });
+                } else if (err) {
+                    return res.json({
+                      success: false,
+                      error: err.message+" error 500",
+                    });
+                }
+
+                var _picture;
+                if (req.file) {
+                  _picture = req.file.filename;
+                }else {
+                  _picture = "";
+                }
+                // Save the user picture
+                await User.updateOne({ _id: userId }, { $push: { _pictures: _picture } });
+
+                res.json({
+                    success: true,
+                });               
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+          success: false,
+          error: 'An error occurred while deleting the user : '+err,
+
+        });
+
+    }
+}];                
+
+exports.deletePicture = [auth,async (req, res) => {
+    try {
+
+        const { userId, index } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+
+            if (index >= 0 && index < user._pictures.length) {
+             
+              user._pictures.splice(index, 1);
+              await user.save();
+
+              res.json({ success: true, message: 'Photo deleted.' });
+
+            } else {
+
+              return res.json({
+
+                    success: false,
+                    error: 'Invalid index.',
+
+                });
+
+            }    
 
         }else{
 
