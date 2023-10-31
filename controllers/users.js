@@ -1094,7 +1094,7 @@ exports.updatePicture = [auth,async (req, res) => {
                   _picture = "";
                 }
                 // Save the user picture
-                await User.updateOne({ _id: userId }, { $push: { _pictures: _picture } });
+                await Users.updateOne({ _id: userId }, { $push: { _pictures: _picture } });
 
                 res.json({
                     success: true,
