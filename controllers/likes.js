@@ -195,9 +195,13 @@ exports.getLikesByUser  = [auth,async (req, res) => {
 
             } else {
 
+                const likedUserIds = likes.map(like => like._liked_userId);
+
+                const usersWhoILiked = await Users.find({ _id: { $in: likedUserIds } });
+
                 res.json({
                     success: true,
-                    likes: likes,
+                    usersWhoILiked: usersWhoILiked,
                 });
 
             }
@@ -327,9 +331,13 @@ exports.getLikesToUser  = [auth,async (req, res) => {
 
             } else {
 
+                const likerUserIds = likes.map(like => like._liker_userId);
+
+                const usersWhoLiked = await Users.find({ _id: { $in: likerUserIds } });
+
                 res.json({
                     success: true,
-                    likes: likes,
+                    usersWhoLiked: usersWhoLiked,
                 });
 
             }
