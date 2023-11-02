@@ -56,6 +56,7 @@ app.use('/get-description-user',express.json());
 app.use('/get-user',express.json());
 app.use('/delete-picture-user',express.json());
 app.use('/get-user-likes',express.json());
+app.use('/get-user-visitor',express.json());
 
 //identity
 app.use('/get-identity', express.json());

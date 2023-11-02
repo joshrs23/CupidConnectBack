@@ -860,7 +860,7 @@ exports.getUsersForLikes = [auth, async (req, res) => {
             }
 
 
-            if(!user.orientations || !user.identities){
+            if(!user._orientations || !user.identities){
 
                 return res.json({
 
@@ -1191,3 +1191,43 @@ exports.deletePicture = [auth,async (req, res) => {
 
     }
 }];                
+
+exports.getUserVisitor = (req, res) => {
+    try {
+
+        const { userId } = req.body; 
+
+        const user = await Users.findById(userId);
+
+        if (!user) {
+
+            return res.json({
+
+                success: false,
+                error: 'User not found.',
+
+            });
+
+        }
+       
+
+        res.json({
+
+            success: true,
+            user: user,
+
+        });
+
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+          success: false,
+          error: 'An error occurred while deleting the user : '+err,
+
+        });
+
+    }
+}
