@@ -838,7 +838,7 @@ exports.getDescriptionsByUser = [auth, async (req, res) => {
 exports.getUsersForLikes = [auth, async (req, res) => {
     try {
 
-        const { userId, page } = req.body; 
+        const { userId/*, page*/ } = req.body; 
 
         const token = req.header('Authorization');
         const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
@@ -872,7 +872,7 @@ exports.getUsersForLikes = [auth, async (req, res) => {
 
             }
 
-            const skip = (page - 1) * 10;//10 is itemsPerPage 
+            //const skip = (page - 1) * 10;//10 is itemsPerPage 
             const orientations = user._orientations;
             const identities = user.identities;
             var identitiesSelected = "";
@@ -925,15 +925,15 @@ exports.getUsersForLikes = [auth, async (req, res) => {
 
             if(valSkipt){
 
-                users = await User.find({ _id: { $ne: userId } })
-                      .skip(skip)
-                      .limit(10);
+                users = await User.find({ _id: { $ne: userId } });
+                      //.skip(skip)
+                      //.limit(10);
 
             }else{
 
-                users = await User.find({ $and: [query, { _id: { $ne: userId } } ] })
-                      .skip(skip)
-                      .limit(10);
+                users = await User.find({ $and: [query, { _id: { $ne: userId } } ] });
+                      //.skip(skip)
+                      //.limit(10);
 
             }
             
