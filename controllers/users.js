@@ -1192,7 +1192,7 @@ exports.deletePicture = [auth,async (req, res) => {
     }
 }];                
 
-exports.getUserVisitor = (req, res) => {
+exports.getUserVisitor = async(req, res) => {
     try {
 
         const { userId } = req.body; 
