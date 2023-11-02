@@ -925,13 +925,13 @@ exports.getUsersForLikes = [auth, async (req, res) => {
 
             if(valSkipt){
 
-                users = await User.find({ _id: { $ne: userId } });
+                users = await Users.find({ _id: { $ne: userId } });
                       //.skip(skip)
                       //.limit(10);
 
             }else{
 
-                users = await User.find({ $and: [query, { _id: { $ne: userId } } ] });
+                users = await Users.find({ $and: [query, { _id: { $ne: userId } } ] });
                       //.skip(skip)
                       //.limit(10);
 
