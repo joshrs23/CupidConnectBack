@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const Likes = require('../models/likes');
 const auth = require('../middlewares/authenticate');
 const Users = require('../models/users');
+const Matches = require('../models/matches');
 
 exports.addLike = [auth,async(req, res) => {
 
@@ -47,6 +48,51 @@ exports.addLike = [auth,async(req, res) => {
             });
           
             await like.save();
+
+            //valide if match 
+
+            const posibleMatch = await Likes.findOne({
+              $and: [
+                { _liker_userId: liker_userId, _liked_userId: liked_userId },
+                { _liker_userId: liked_userId, _liked_userId: liker_userId }
+              ]
+            });
+
+            if (posibleMatch) {
+              
+              const result = await Likes.deleteMany({
+                $or: [
+                  { $and: [
+                    { _liker_userId: liker_userId, _liked_userId: liked_userId }
+                  ]},
+                  { $and: [
+                    { _liker_userId: liked_userId, _liked_userId: liker_userId }
+                  ]}
+                ]
+              });
+
+              if (result.deletedCount > 0) {
+                
+                const match = Matches({
+                  _userId1: liker_userId,
+                  _userId2: liked_userId
+                });
+
+                await match.save();
+
+              }else{
+
+                  return res.json({
+
+                    success: false,
+                    error: 'Error deleting likes.',
+
+                });
+
+              }
+
+            }
+            //end posibleMatach
 
             res.json({
 
