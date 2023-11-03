@@ -95,7 +95,7 @@ exports.DeleteMatch  = [auth,async (req, res) => {
 
     try {
 
-        const { userId1,_userId2  } = req.body;
+        const { userId1,userId2  } = req.body;
 
         const token = req.header('Authorization');
         const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
