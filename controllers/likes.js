@@ -52,12 +52,11 @@ exports.addLike = [auth,async(req, res) => {
             //valide if match 
 
             const posibleMatch = await Likes.findOne({
-              $and: [
-                { _liker_userId: liker_userId, _liked_userId: liked_userId },
-                { _liker_userId: liked_userId, _liked_userId: liker_userId }
-              ]
+              _liker_userId: liked_userId,
+              _liked_userId: liker_userId
             });
-
+            
+            
             if (posibleMatch) {
               
               const result = await Likes.deleteMany({

@@ -6,6 +6,7 @@ const auth = require('../middlewares/authenticate');
 const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const Matches = require('../models/matches');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -941,13 +942,24 @@ exports.getUsersForLikes = [auth, async (req, res) => {
             const userLikes = await Likes.find({ _liker_userId: userId });
 
             const userDislikes = await Dislikes.find({ _disliker_userId: userId });
+
+            const possibleMatches = await Matches.find({ $or: [{ _userId1: userId }, { _userId2: userId }] });//nuevo
             
-            const usersToDisplay = users.filter((user) => {
+            /*const usersToDisplay = users.filter((user) => {
                 const userId = user._id.toString(); // Convierte el _id a una cadena
                     return (
                         !userLikes.some((like) => like._liked_userId === userId) &&
                         !userDislikes.some((dislike) => dislike._disliked_userId === userId)
                     );
+            });*/
+
+            const usersToDisplay = users.filter((user) => {
+              const userId = user._id.toString(); // Convierte el _id a una cadena
+              return (
+                !userLikes.some((like) => like._liked_userId === userId) &&
+                !userDislikes.some((dislike) => dislike._disliked_userId === userId) &&
+                !possibleMatches.some((match) => match._userId1 === userId || match._userId2 === userId )
+              );
             });
 
             res.json({

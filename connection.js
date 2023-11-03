@@ -16,6 +16,7 @@ const orientationRouter = require('./routes/orientations');
 const interestRouter = require('./routes/interests');
 const likeRouter = require('./routes/likes');
 const dislikeRouter = require('./routes/dislikes');
+const matchesRouter = require('./routes/matches');
 
 
 app.use(cors());
@@ -77,6 +78,9 @@ app.use('/get-likes-to-user', express.json());
 //dislike
 app.use('/add-dislike', express.json());
 
+//matches
+app.use('/get-matches', express.json());
+app.use('/delete-match', express.json());
 
 app.use(CountryRouter);
 app.use(ProvinceRouter);
