@@ -95,15 +95,15 @@ exports.DeleteMatch  = [auth,async (req, res) => {
 
     try {
 
-        const { userId,matchId,  } = req.body;
+        const { userId1,_userId2  } = req.body;
 
         const token = req.header('Authorization');
         const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
         const _userId = decodedToken.userId;
 
-        if(userId === _userId){
+        if(userId1 === _userId){
 
-            const user = await Users.findById(userId);
+            const user = await Users.findById(userId1);
 
             if (!user) {
 
@@ -116,7 +116,12 @@ exports.DeleteMatch  = [auth,async (req, res) => {
 
             }
 
-            const deletedMatch = await Matches.findOneAndRemove({ _id: matchId });
+            const deletedMatch = await Matches.findOneAndRemove({
+              $or: [
+                { _userId1: userId1, _userId2: userId2 },
+                { _userId1: userId2, _userId2: userId1 },
+              ],
+            });
 
             if (!deletedMatch) {
 
