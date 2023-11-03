@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Dislikes = require('../models/dislikes');
 const auth = require('../middlewares/authenticate');
 const Users = require('../models/users');

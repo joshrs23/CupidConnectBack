@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Likes = require('../models/likes');
 const auth = require('../middlewares/authenticate');
 const Users = require('../models/users');
@@ -50,8 +51,7 @@ exports.addLike = [auth,async(req, res) => {
             res.json({
 
                 success: true,
-                like: like,
-                token
+                like: like
 
             });
              
