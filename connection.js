@@ -91,6 +91,7 @@ app.use(orientationRouter);
 app.use(interestRouter);
 app.use(likeRouter);
 app.use(dislikeRouter);
+app.use(matchesRouter);
 
 const options = {
   key: fs.readFileSync('/home/nebula/server.key'),
