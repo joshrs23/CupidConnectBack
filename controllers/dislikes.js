@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const Dislikes = require('../models/dislikes');
 const auth = require('../middlewares/authenticate');
 const Users = require('../models/users');
+const Likes = require('../models/likes');
 
 exports.addDislike = [auth,async(req, res) => {
 
@@ -47,6 +48,14 @@ exports.addDislike = [auth,async(req, res) => {
             });
           
             await dislike.save();
+
+            const validateLike = await Likes.findOne({_liker_userId: disliker_userId, _liked_userId: disliked_userId });
+
+            if (validateLike) {
+
+                const deletionResult = await validateLike.deleteOne();
+
+            }
 
             res.json({
 
