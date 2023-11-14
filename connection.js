@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const https = require('https');
+const socketIo = require('socket.io');
 require('dotenv').config();
 require('./models/connectionMongoDb');
 
@@ -81,6 +82,7 @@ app.use('/add-dislike', express.json());
 //matches
 app.use('/get-matches', express.json());
 app.use('/delete-match', express.json());
+app.use('/get-match', express.json());
 
 app.use(CountryRouter);
 app.use(ProvinceRouter);
@@ -93,12 +95,45 @@ app.use(likeRouter);
 app.use(dislikeRouter);
 app.use(matchesRouter);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack); // Log the error stack to the console
+  res.status(500).send('Something broke!'); // Send a generic error response
+});
+// end Error handling middleware
+
 const options = {
   key: fs.readFileSync('/home/nebula/server.key'),
   cert: fs.readFileSync('/home/nebula/server.crt')
 };
 
 const port = 8000;
-https.createServer(options,app).listen(port, () => {
+/*https.createServer(options,app).listen(port, () => {
   console.log(`Server HTTPS is listening to the port ${port}`);
+});*/
+https.createServer(options, app).listen(port, () => {
+  console.log(`Server HTTPS is listening to the port ${port}`);
+}).on('error', (err) => {
+  console.error('Failed to start server:', err);
+});
+
+const io = socketIo(server);
+
+io.on('connection', (socket) => {
+    console.log('Un usuario se ha conectado');
+
+    // Suponiendo que recibes el ID de la sala de alguna manera (ej. desde el cliente)
+    socket.on('join room', (matchId) => {
+        socket.join(matchId);
+        console.log(`Usuario se ha unido a la sala ${matchId}`);
+    });
+
+    socket.on('chat message', (matchId, msg) => {
+        // Envía el mensaje solo a los usuarios en la sala específica
+        io.to(matchId).emit('chat message', msg);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Un usuario se ha desconectado');
+    });
 });

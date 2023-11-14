@@ -91,6 +91,70 @@ exports.getMatchesByUser  = [auth,async (req, res) => {
 
 }];
 
+exports.getMatchByUser  = [auth,async (req, res) => {
+
+    try {
+
+        const { userId1,userId2 } = req.body;
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId1 === _userId){
+
+            const user = await Users.findById(userId1);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            const match = await Match.findOne({ $or: [{ _userId1: userId1, _userId2: userId2 }, { _userId1: userId2, _userId2: userId1 }] });
+
+            if (!match) {
+
+                res.json({
+                    success: false,
+                    match: null,
+                });
+
+            } else {
+
+                res.json({
+                    success: true,
+                    match: match,
+                });
+
+            }
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+        }
+
+    } catch (err) {
+
+        res.json({
+            success: false,
+            error: err.message,
+        });
+
+    }
+
+}];
+
 exports.DeleteMatch  = [auth,async (req, res) => {
 
     try {
