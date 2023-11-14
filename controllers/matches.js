@@ -116,7 +116,7 @@ exports.getMatchByUser  = [auth,async (req, res) => {
 
             }
 
-            const match = await Match.findOne({ $or: [{ _userId1: userId1, _userId2: userId2 }, { _userId1: userId2, _userId2: userId1 }] });
+            const match = await Matches.findOne({ $or: [{ _userId1: userId1, _userId2: userId2 }, { _userId1: userId2, _userId2: userId1 }] });
 
             if (!match) {
 
