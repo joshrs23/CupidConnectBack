@@ -107,18 +107,9 @@ const options = {
   cert: fs.readFileSync('/home/nebula/server.crt')
 };
 
-const port = 8000;
-/*https.createServer(options,app).listen(port, () => {
-  console.log(`Server HTTPS is listening to the port ${port}`);
-});*/
-https.createServer(options, app).listen(port, () => {
-  console.log(`Server HTTPS is listening to the port ${port}`);
-}).on('error', (err) => {
-  console.error('Failed to start server:', err);
-});
+const server = https.createServer(options, app);
 
 const io = socketIo(server);
-
 io.on('connection', (socket) => {
     console.log('Un usuario se ha conectado');
 
@@ -137,3 +128,22 @@ io.on('connection', (socket) => {
         console.log('Un usuario se ha desconectado');
     });
 });
+
+const port = 8000;
+
+/*https.createServer(options,app).listen(port, () => {
+  console.log(`Server HTTPS is listening to the port ${port}`);
+});*///modo1
+/*
+https.createServer(options, app).listen(port, () => {
+  console.log(`Server HTTPS is listening to the port ${port}`);
+}).on('error', (err) => {
+  console.error('Failed to start server:', err);
+});//modo2
+*/
+server.listen(port, () => {
+  console.log(`Server HTTPS is listening to the port ${port}`);
+}).on('error', (err) => {
+  console.error('Failed to start server:', err);
+});
+
