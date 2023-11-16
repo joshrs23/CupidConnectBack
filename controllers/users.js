@@ -1279,7 +1279,7 @@ exports.getAllUser_admin = [auth,async (req, res) => {
 
             }
            
-           const users = await Users.find({});
+           const users = await Users.find({_active: true});
 
             res.json({
 
