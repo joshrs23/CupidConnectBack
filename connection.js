@@ -20,7 +20,17 @@ const dislikeRouter = require('./routes/dislikes');
 const matchesRouter = require('./routes/matches');
 
 
-app.use(cors());
+//app.use(cors());
+// Configuración de CORS
+const corsOptions = {
+  origin: '*', // Reemplaza con el origen de tu frontend
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', '*');
@@ -83,6 +93,7 @@ app.use('/add-dislike', express.json());
 app.use('/get-matches', express.json());
 app.use('/delete-match', express.json());
 app.use('/get-match', express.json());
+app.use('/get-all-matches', express.json());
 
 app.use(CountryRouter);
 app.use(ProvinceRouter);
@@ -109,7 +120,15 @@ const options = {
 
 const server = https.createServer(options, app);
 
-const io = socketIo(server);
+//const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: "*", // Reemplaza con el origen de tu frontend
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
 io.on('connection', (socket) => {
     console.log('Un usuario se ha conectado');
 
@@ -119,9 +138,10 @@ io.on('connection', (socket) => {
         console.log(`Usuario se ha unido a la sala ${matchId}`);
     });
 
-    socket.on('chat message', (matchId, msg) => {
-        // Envía el mensaje solo a los usuarios en la sala específica
-        io.to(matchId).emit('chat message', msg);
+    socket.on('chat message', (matchId, user, msg) => {
+      console.log(matchId + " " + user+ " " + msg);
+
+      io.in(matchId).emit('chat message', user,msg);
     });
 
     socket.on('disconnect', () => {
