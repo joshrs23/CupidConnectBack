@@ -69,6 +69,8 @@ app.use('/get-user',express.json());
 app.use('/delete-picture-user',express.json());
 app.use('/get-user-likes',express.json());
 app.use('/get-user-visitor',express.json());
+app.use('/get-all-users',express.json());
+app.use('/delete-user-admin',express.json());
 
 //identity
 app.use('/get-identity', express.json());

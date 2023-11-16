@@ -1243,3 +1243,146 @@ exports.getUserVisitor = async(req, res) => {
 
     }
 }
+
+exports.getAllUser_admin = [auth,async (req, res) => {
+    try {
+
+        const { userId } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            if(user._type != 9758){
+
+                return res.json({
+
+                    success: false,
+                    error: 'User is not admin.',
+
+                });
+
+            }
+           
+           const users = await Users.find({});
+
+            res.json({
+
+                success: true,
+                users: users,
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+          success: false,
+          error: 'An error occurred while deleting the user : '+err,
+
+        });
+
+    }
+}];    
+
+exports.deleteUser_admin = [auth,async (req, res) => {
+    try {
+
+        const { userId,userId2 } = req.body; 
+
+        const token = req.header('Authorization');
+        const decodedToken = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const _userId = decodedToken.userId;
+
+        if(userId === _userId){
+
+            const user = await Users.findById(userId);
+
+            if (!user) {
+
+                return res.json({
+
+                    success: false,
+                    error: 'User not found.',
+
+                });
+
+            }
+
+            if(user._type != 9758){
+
+                return res.json({
+
+                    success: false,
+                    error: 'User is not admin.',
+
+                });
+
+            }
+            
+            const updateResult = await Users.updateOne(
+
+              { _id: userId2 }, 
+              { $set: { _active: false } } 
+
+            );
+
+            if (updateResult.nModified === 0) {
+              res.json({ success: false, error: 'Error user not deleted.' });
+            }
+
+            res.json({
+
+                success: true,
+                message: 'User has been successfully deleted.',
+
+            });
+
+        }else{
+
+            res.json({
+
+                success: false,
+                error: "This user is not the owner of the account.",
+
+            });
+        }
+
+    } catch (err) {
+
+        console.error(err);
+        res.json({
+
+          success: false,
+          error: 'An error occurred while deleting the user : '+err,
+
+        });
+
+    }
+}];

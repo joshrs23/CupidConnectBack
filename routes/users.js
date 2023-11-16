@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const express = require('express');
 const router = express.Router();
-const{createUser, userSignIn,deleteUser,changePassword,changeIdentity,changeOrientations,changeInterests, changeDescription,getIdentityByUser,getOrientationsByUser,getInterestsByUser,getDescriptionsByUser,getUser,deletePicture,uploadFile,updatePicture, getUsersForLikes,getUserVisitor} = require('../controllers/users')
+const{createUser, userSignIn,deleteUser,changePassword,changeIdentity,changeOrientations,changeInterests, changeDescription,getIdentityByUser,getOrientationsByUser,getInterestsByUser,getDescriptionsByUser,getUser,deletePicture,uploadFile,updatePicture, getUsersForLikes,getUserVisitor,getAllUser_admin,deleteUser_admin} = require('../controllers/users')
 
 
 router.post('/create-user',createUser);
@@ -21,4 +21,6 @@ router.post('/delete-picture-user', deletePicture);
 router.post('/upload-picture-user',express.json(), uploadFile, updatePicture);
 router.post('/get-user-likes', getUsersForLikes);
 router.post('/get-user-visitor', getUserVisitor);
+router.post('/get-all-users', getAllUser_admin);
+router.post('/delete-user-admin', deleteUser_admin);
 module.exports = router;
