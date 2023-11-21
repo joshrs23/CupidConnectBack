@@ -28,9 +28,9 @@ exports.getMessagesByMatch  = [auth,async (req, res) => {
 
             }
 
-            const Messages = await Messages.find({  _matchId: matchId  });
+            const messages = await Messages.find({  _matchId: matchId  });
 
-            if (!Messages) {
+            if (!messages) {
 
                 res.json({
                     success: false,
