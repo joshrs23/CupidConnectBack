@@ -160,3 +160,5 @@ async function saveMessageToDB({ matchId, sender, text }) {
     }
 
 }
+
+exports.saveMessageToDB = saveMessageToDB;
