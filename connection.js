@@ -137,23 +137,33 @@ const io = socketIo(server, {
   }
 });
 
+const { saveMessageToDB } = require('./controllers/messages');
+
 io.on('connection', (socket) => {
-    console.log('Un usuario se ha conectado');
+    //console.log('Un usuario se ha conectado');
 
     // Suponiendo que recibes el ID de la sala de alguna manera (ej. desde el cliente)
     socket.on('join room', (matchId) => {
         socket.join(matchId);
-        console.log(`Usuario se ha unido a la sala ${matchId}`);
+        //console.log(`Usuario se ha unido a la sala ${matchId}`);
     });
 
-    socket.on('chat message', (matchId, user, msg) => {
-      console.log(matchId + " " + user+ " " + msg);
+    socket.on('chat message', async (matchId, user, msg) => {
+      //console.log(matchId + " " + user+ " " + msg);
+
+      const result = await saveMessageToDB({ matchId, sender: user, text: msg });
+
+        if (!result.success) {
+
+            console.error('Error al guardar el mensaje:', result.error);
+
+        }
 
       io.in(matchId).emit('chat message', user,msg);
     });
 
     socket.on('disconnect', () => {
-        console.log('Un usuario se ha desconectado');
+        //console.log('Un usuario se ha desconectado');
     });
 });
 
