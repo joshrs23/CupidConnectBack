@@ -18,6 +18,7 @@ const interestRouter = require('./routes/interests');
 const likeRouter = require('./routes/likes');
 const dislikeRouter = require('./routes/dislikes');
 const matchesRouter = require('./routes/matches');
+const messagesRouter = require('./routes/matches');
 
 
 //app.use(cors());
@@ -97,6 +98,10 @@ app.use('/delete-match', express.json());
 app.use('/get-match', express.json());
 app.use('/get-all-matches', express.json());
 
+//messages
+app.use('/add-message', express.json());
+app.use('/get-message', express.json());
+
 app.use(CountryRouter);
 app.use(ProvinceRouter);
 app.use(userRouter);
@@ -107,6 +112,7 @@ app.use(interestRouter);
 app.use(likeRouter);
 app.use(dislikeRouter);
 app.use(matchesRouter);
+app.use(messagesRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
