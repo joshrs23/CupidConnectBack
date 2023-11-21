@@ -18,7 +18,7 @@ const interestRouter = require('./routes/interests');
 const likeRouter = require('./routes/likes');
 const dislikeRouter = require('./routes/dislikes');
 const matchesRouter = require('./routes/matches');
-const messagesRouter = require('./routes/matches');
+const messagesRouter = require('./routes/messages');
 
 
 //app.use(cors());
