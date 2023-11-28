@@ -1073,6 +1073,10 @@ exports.updatePicture = [auth,async (req, res) => {
                 });
 
             }
+            var noPhoto = false;
+            if (user._pictures.length > 0) {
+                noPhoto = true;
+            }
            
             if (user._pictures.length >= 3) {
               
@@ -1107,6 +1111,10 @@ exports.updatePicture = [auth,async (req, res) => {
                 }
                 // Save the user picture
                 await Users.updateOne({ _id: userId }, { $push: { _pictures: _picture } });
+
+                if(noPhoto==false){
+                    await Users.updateOne({ _id: userId }, { $push: { _profilePicture: _picture } });
+                }
 
                 res.json({
                     success: true,
@@ -1164,9 +1172,14 @@ exports.deletePicture = [auth,async (req, res) => {
 
             if (index >= 0 && index < user._pictures.length) {
              
-              user._pictures.splice(index, 1);
-              //await user.save();
-              await Users.updateOne({ _id: userId }, { _pictures: user._pictures })
+                user._pictures.splice(index, 1);
+                //await user.save();
+                await Users.updateOne({ _id: userId }, { _pictures: user._pictures })
+
+
+                if (user._pictures.length > 0) {
+                    await Users.updateOne({ _id: userId }, { _profilePicture: user._pictures[0] })
+                }
 
               res.json({ success: true, message: 'Photo deleted.' });
 
