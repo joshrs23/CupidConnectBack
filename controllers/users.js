@@ -1113,7 +1113,7 @@ exports.updatePicture = [auth,async (req, res) => {
                 await Users.updateOne({ _id: userId }, { $push: { _pictures: _picture } });
 
                 if(noPhoto==false){
-                    await Users.updateOne({ _id: userId }, { $push: { _profilePicture: _picture } });
+                    await Users.updateOne({ _id: userId }, {  _profilePicture: _picture });
                 }
 
                 res.json({
