@@ -1179,6 +1179,8 @@ exports.deletePicture = [auth,async (req, res) => {
 
                 if (user._pictures.length > 0) {
                     await Users.updateOne({ _id: userId }, { _profilePicture: user._pictures[0] })
+                }else{
+                    await Users.updateOne({ _id: userId }, { _profilePicture: "" })
                 }
 
               res.json({ success: true, message: 'Photo deleted.' });
